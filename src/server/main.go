@@ -1,69 +1,68 @@
 package main
 
-import(
-	"encoding/json"
-	"github.com/labstack/echo"
+import (
+	"github.com/dgrijalva/jwt-go"
+	"github.com/gin-gonic/gin"
+	"log"
 	"net/http"
+	"os"
+	"time"
 )
 
-func main(){
-	e := echo.New()
+var (
+	router = gin.Default()
+)
 
-	e.GET("/", func(c echo.Context) error {
-		return c.String(http.StatusOK, "Hello World!")
-	})
-
-	e.POST("/login", login)
-
-	e.Logger.Fatal(e.Start(":1324"))
+func main() {
+	router.POST("/login", Login)
+	log.Fatal(router.Run(":8080"))
 }
 
-func login(c echo.Context) error {
-	id := c.FormValue("id")
-	password := c.FormValue("password")
+type User struct {
+	ID       uint64 `json:"id"`
+	Username string `json:"username"`
+	Password string `json:"password"`
+	Phone    string `json:"phone"`
+}
 
-	if confirmLoginInfo(id, password){
-		accessToken, refreshToken := createToken(id)
-		tokens := make(map[string]string)
+var user = User{
+	ID:       1,
+	Username: "username",
+	Password: "password",
+	Phone:    "01012341234",
+}
 
-		tokens["accessToken"] = accessToken
-		tokens["refreshToken"] = refreshToken
-
-		return c.String(http.StatusOK, makeResponse(tokens))
-	}else{
-		return c.String(http.StatusUnauthorized, "invalid id or password!!")
+func Login(c *gin.Context) {
+	var u User
+	if err := c.ShouldBind(&u); err != nil {
+		c.JSON(http.StatusUnprocessableEntity, "Invalid json provided")
+		return
 	}
+
+	if user.Username != u.Username || user.Password != u.Password {
+		c.JSON(http.StatusUnauthorized, "Please provide valid login details")
+		return
+	}
+	token, err := CreateToken(user.ID)
+	if err != nil {
+		c.JSON(http.StatusUnprocessableEntity, err.Error())
+		return
+	}
+	c.JSON(http.StatusOK, token)
 }
 
+func CreateToken(userId uint64) (string, error) {
+	var err error
+	os.Setenv("ACCESS_SECRET", "jdnfksdmfksd")
+	atClaims := jwt.MapClaims{}
+	atClaims["authorized"] = true
+	atClaims["user_id"] = userId
+	atClaims["exp"] = time.Now().Add(time.Minute * 15).Unix()
+	at := jwt.NewWithClaims(jwt.SigningMethodHS256, atClaims)
+	token, err := at.SignedString([]byte(os.Getenv("ACCESS_SECRET")))
+	if err != nil {
+		return "", err
+	}
 
-/*
-	JSON Type의 response를 리턴한다
-	key-value에 추가적인 정보를 더 한다
-*/
-func makeResponse(values map[string]string) string{
-	jsonString, _ := json.Marshal(values)
-	return string(jsonString)
-}
-
-
-
-
-/*
-	TODO
-	id와 password로 사용자를 인증한다.
-	그냥 test 비교만 수행*/
-func confirmLoginInfo(id string, password string) bool {
-	return true
-}
-
-
-/*
-	TODO
-	토큰을 생성한다
-
-	access token에는 사용자 아이디와 토큰 만료 시간이 들어간다
-	refresh token에는 토큰 만료 시간이 들어간다
-*/
-func createToken(id string) (string, string){
-	return "alsdkjf19p0aklsjdfasdf1232512", "asdfasdpa;sdfj;laskdjf;"
+	return token, nil
 }
