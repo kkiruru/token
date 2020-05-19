@@ -8,7 +8,7 @@ import (
 	"os"
 	"time"
 
-	"github.com/kkiruru/token/server/model/dto"
+	"github.com/kkiruru/token/model/dto"
 )
 
 var (
@@ -20,14 +20,7 @@ func main() {
 	log.Fatal(router.Run(":8080"))
 }
 
-//type User struct {
-//	ID       uint64 `json:"id"`
-//	Username string `json:"username"`
-//	Password string `json:"password"`
-//	Phone    string `json:"phone"`
-//}
-
-var user = User{
+var user = dto.User{
 	ID:       1,
 	Username: "username",
 	Password: "password",
@@ -35,7 +28,7 @@ var user = User{
 }
 
 func login(c *gin.Context) {
-	var u User
+	var u dto.User
 	if err := c.ShouldBind(&u); err != nil {
 		c.JSON(http.StatusUnprocessableEntity, "Invalid json provided")
 		return
