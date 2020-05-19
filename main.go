@@ -7,6 +7,8 @@ import (
 	"net/http"
 	"os"
 	"time"
+
+	"github.com/kkiruru/token/server/model/dto"
 )
 
 var (
@@ -14,16 +16,16 @@ var (
 )
 
 func main() {
-	router.POST("/login", Login)
+	router.POST("/login", login)
 	log.Fatal(router.Run(":8080"))
 }
 
-type User struct {
-	ID       uint64 `json:"id"`
-	Username string `json:"username"`
-	Password string `json:"password"`
-	Phone    string `json:"phone"`
-}
+//type User struct {
+//	ID       uint64 `json:"id"`
+//	Username string `json:"username"`
+//	Password string `json:"password"`
+//	Phone    string `json:"phone"`
+//}
 
 var user = User{
 	ID:       1,
@@ -32,7 +34,7 @@ var user = User{
 	Phone:    "01012341234",
 }
 
-func Login(c *gin.Context) {
+func login(c *gin.Context) {
 	var u User
 	if err := c.ShouldBind(&u); err != nil {
 		c.JSON(http.StatusUnprocessableEntity, "Invalid json provided")
@@ -53,7 +55,7 @@ func Login(c *gin.Context) {
 
 func CreateToken(userId uint64) (string, error) {
 	var err error
-	os.Setenv("ACCESS_SECRET", "jdnfksdmfksd")
+	os.Setenv("ACCESS_SECRET", "golang-token-example")
 	atClaims := jwt.MapClaims{}
 	atClaims["authorized"] = true
 	atClaims["user_id"] = userId
