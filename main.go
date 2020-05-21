@@ -8,6 +8,7 @@ import (
 	"os"
 	"time"
 
+	"github.com/kkiruru/token/model/dao"
 	"github.com/kkiruru/token/model/dto"
 )
 
@@ -33,6 +34,8 @@ func login(c *gin.Context) {
 		c.JSON(http.StatusUnprocessableEntity, "Invalid json provided")
 		return
 	}
+
+	dao.UserDao("")
 
 	if user.Username != u.Username || user.Password != u.Password {
 		c.JSON(http.StatusUnauthorized, "Please provide valid login details")
