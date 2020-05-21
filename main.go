@@ -1,12 +1,13 @@
 package main
 
 import (
-	"github.com/dgrijalva/jwt-go"
-	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
 	"os"
 	"time"
+
+	"github.com/dgrijalva/jwt-go"
+	"github.com/gin-gonic/gin"
 
 	"github.com/kkiruru/token/model/dao"
 	"github.com/kkiruru/token/model/dto"
@@ -21,13 +22,6 @@ func main() {
 	log.Fatal(router.Run(":8080"))
 }
 
-var user = dto.User{
-	ID:       1,
-	Username: "username",
-	Password: "password",
-	Phone:    "01012341234",
-}
-
 func login(c *gin.Context) {
 	var u dto.User
 	if err := c.ShouldBind(&u); err != nil {
@@ -35,9 +29,10 @@ func login(c *gin.Context) {
 		return
 	}
 
-	dao.UserDao("")
+	//for TEST Only...
+	user, _ := dao.FindById("id1")
 
-	if user.Username != u.Username || user.Password != u.Password {
+	if user.ID != u.ID || user.Password != u.Password {
 		c.JSON(http.StatusUnauthorized, "Please provide valid login details")
 		return
 	}
@@ -49,7 +44,7 @@ func login(c *gin.Context) {
 	c.JSON(http.StatusOK, token)
 }
 
-func CreateToken(userId uint64) (string, error) {
+func CreateToken(userId string) (string, error) {
 	var err error
 	os.Setenv("ACCESS_SECRET", "golang-token-example")
 	atClaims := jwt.MapClaims{}

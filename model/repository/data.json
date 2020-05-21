@@ -1,23 +1,26 @@
 {
   "account" : [
     {
-      "name" : "user1",
       "id" : "id1",
-      "password" : "password1"
+      "username" : "name1",
+      "password" : "password1",
+      "phone" : "010-1234-5678"
     },
     {
-      "name" : "user2",
       "id" : "id2",
-      "password" : "password2"
+      "username" : "name2",
+      "password" : "password2",
+      "phone" : "010-1111-3333"
     },
     {
-      "name" : "user3",
       "id" : "id3",
-      "password" : "password3"
+      "username" : "name3",
+      "password" : "password3",
+      "phone" : ""
     },
     {
-      "name" : "user4",
       "id" : "id4",
+      "username" : "name4",
       "password" : "password4"
     }
   ]

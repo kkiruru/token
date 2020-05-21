@@ -7,9 +7,9 @@ import (
 	"io/ioutil"
 )
 
-var repo map[string][]string
+//var repo map[string][]string
 
-func LoadTable(tableName string, attribute string) (string, error) {
+func LoadTable(tableName string) (interface{}, error) {
 
 	file, err := ioutil.ReadFile("./model/repository/data.json")
 	if err != nil {
@@ -18,13 +18,8 @@ func LoadTable(tableName string, attribute string) (string, error) {
 	}
 
 	var dataMap map[string]interface{}
-	err = json.Unmarshal(file, &dataMap) // JSON 문서의 내용을 변환하여 data에 저장
-
-	if nil != dataMap[tableName] {
-		account(dataMap[tableName], attribute)
-	}
-
-	return "", nil
+	err = json.Unmarshal(file, &dataMap)
+	return dataMap[tableName], err
 }
 
 func LoadRecord(tableName string, attribute string) (string, error) {
@@ -38,14 +33,11 @@ func LoadRecord(tableName string, attribute string) (string, error) {
 	var dataMap map[string]interface{}
 	err = json.Unmarshal(file, &dataMap) // JSON 문서의 내용을 변환하여 data에 저장
 
-	if nil != dataMap[tableName] {
-		account(dataMap[tableName], attribute)
-	}
-
 	return "", nil
 }
 
-func account(m interface{}, key string) (string, error) {
-	fmt.Println(m)
-	return "", nil
-}
+//
+//func account(m interface{}) (string, error) {
+//	fmt.Println(m)
+//	return "", nil
+//}
