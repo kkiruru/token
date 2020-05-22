@@ -16,6 +16,10 @@ var (
 
 func main() {
 	router.POST("/login", login)
+	router.GET("/api1", api1)
+	router.GET("/api2", api2)
+	router.GET("/api3", api3)
+
 	log.Fatal(router.Run(":8080"))
 }
 
@@ -37,4 +41,16 @@ func login(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusUnprocessableEntity, err.Error())
+}
+
+func api1(c *gin.Context) {
+	c.JSON(http.StatusOK, "ap1")
+}
+
+func api2(c *gin.Context) {
+	c.JSON(http.StatusOK, "api2")
+}
+
+func api3(c *gin.Context) {
+	c.JSON(http.StatusOK, "api3")
 }

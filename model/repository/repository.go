@@ -35,9 +35,3 @@ func LoadRecord(tableName string, attribute string) (string, error) {
 
 	return "", nil
 }
-
-//
-//func account(m interface{}) (string, error) {
-//	fmt.Println(m)
-//	return "", nil
-//}
