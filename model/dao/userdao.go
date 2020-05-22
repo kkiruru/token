@@ -3,7 +3,7 @@ package dao
 import (
 	"encoding/json"
 	"errors"
-	//"github.com/kkiruru/token/model/dto"
+
 	"github.com/kkiruru/token/model/dto"
 	"github.com/kkiruru/token/model/repository"
 )
@@ -21,36 +21,26 @@ func FindById(id string) (*dto.User, error) {
 		}
 	}
 
-	return nil, errors.New("not found user info")
+	return nil, errors.New("Account does not exist")
 }
 
 func FindAll() (*[]dto.User, error) {
-	response, err := repository.LoadTable("account")
+	table, err := repository.LoadTable("account")
 
 	if err != nil {
 		return nil, err
 	}
 
-	var slice []dto.User
+	var users []dto.User
 
-	for _, item := range response.([]interface{}) {
+	for _, record := range table.([]interface{}) {
 
 		user := dto.User{}
 
-		bodyBytes, _ := json.Marshal(item)
+		bodyBytes, _ := json.Marshal(record)
 		json.Unmarshal(bodyBytes, &user)
-		//
-		//
-		//item.
-		//user := item.(dto.User)
-		slice = append(slice, user)
+		users = append(users, user)
 	}
-	//
-	//for _, item := range response {
-	//	fmt.Printf("%v", item.(map[string]interface{})["title"])
-	//}
-	//
-	//data := i.([]dto.User)
 
-	return &slice, nil
+	return &users, nil
 }
