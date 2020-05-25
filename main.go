@@ -44,7 +44,7 @@ func login(c *gin.Context) {
 }
 
 func api1(c *gin.Context) {
-	c.JSON(http.StatusOK, "ap1")
+	c.JSON(http.StatusOK, "api1")
 }
 
 func api2(c *gin.Context) {
