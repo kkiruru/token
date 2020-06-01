@@ -9,7 +9,7 @@ import (
 	"github.com/dgrijalva/jwt-go"
 )
 
-func CreateToken(userId string) (string, error) {
+func CreateToken(userId string) (string, string, error) {
 	var err error
 	os.Setenv("ACCESS_SECRET", "golang-token-example")
 	atClaims := jwt.MapClaims{}
@@ -19,8 +19,23 @@ func CreateToken(userId string) (string, error) {
 	at := jwt.NewWithClaims(jwt.SigningMethodHS256, atClaims)
 	token, err := at.SignedString([]byte(os.Getenv("ACCESS_SECRET")))
 	if err != nil {
-		return "", err
+		return "", "", err
 	}
 
-	return token, nil
+	return token, "refresh_token", nil
+}
+
+func TokenAuthorize(token string) error {
+
+	return nil
+}
+
+func TokenRefresh(accessToken string, refreshToken string) (string, string, error) {
+
+	err := TokenAuthorize(accessToken)
+	if err != nil {
+		return "", "", err
+	}
+
+	return "", "", nil
 }

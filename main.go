@@ -1,8 +1,10 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/gin-gonic/gin"
 
@@ -33,9 +35,9 @@ func login(c *gin.Context) {
 	//for TEST Only...
 	account, err := service.Authentication(login.ID, login.Password)
 	if err == nil {
-		token, err := service.CreateToken(account.ID)
+		access_token, _, err := service.CreateToken(account.ID)
 		if err == nil {
-			c.JSON(http.StatusOK, token)
+			c.JSON(http.StatusOK, access_token)
 			return
 		}
 	}
@@ -52,5 +54,7 @@ func api2(c *gin.Context) {
 }
 
 func api3(c *gin.Context) {
+	fmt.Println("called api3 >>")
+	time.Sleep(time.Second * 3)
 	c.JSON(http.StatusOK, "api3")
 }
